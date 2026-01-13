@@ -22,6 +22,7 @@ type ListEntitiesResponse struct {
 	Total    int      `json:"total,omitempty"`
 }
 
+// ListEntities retrieves entities (users, agents, apps, runs) with optional filtering.
 func (c *Client) ListEntities(ctx context.Context, req *ListEntitiesRequest) (*ListEntitiesResponse, error) {
 	query := url.Values{}
 
@@ -62,14 +63,17 @@ func (c *Client) ListEntities(ctx context.Context, req *ListEntitiesRequest) (*L
 	return &resp, nil
 }
 
+// ListUsers retrieves all user entities.
 func (c *Client) ListUsers(ctx context.Context) (*ListEntitiesResponse, error) {
 	return c.ListEntities(ctx, &ListEntitiesRequest{Type: EntityTypeUser})
 }
 
+// ListAgents retrieves all agent entities.
 func (c *Client) ListAgents(ctx context.Context) (*ListEntitiesResponse, error) {
 	return c.ListEntities(ctx, &ListEntitiesRequest{Type: EntityTypeAgent})
 }
 
+// DeleteEntity deletes an entity and all its associated memories.
 func (c *Client) DeleteEntity(ctx context.Context, entityType EntityType, entityID string) error {
 	if entityType == "" || entityID == "" {
 		return ErrMissingID
@@ -79,10 +83,12 @@ func (c *Client) DeleteEntity(ctx context.Context, entityType EntityType, entity
 	return c.do(ctx, http.MethodDelete, path, nil, nil, nil)
 }
 
+// DeleteUser deletes a user entity and all its associated memories.
 func (c *Client) DeleteUser(ctx context.Context, userID string) error {
 	return c.DeleteEntity(ctx, EntityTypeUser, userID)
 }
 
+// DeleteAgent deletes an agent entity and all its associated memories.
 func (c *Client) DeleteAgent(ctx context.Context, agentID string) error {
 	return c.DeleteEntity(ctx, EntityTypeAgent, agentID)
 }

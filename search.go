@@ -23,6 +23,7 @@ type SearchResponse struct {
 	Results []Memory `json:"results"`
 }
 
+// Search performs a semantic search across memories using the given query and filters.
 func (c *Client) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	if req == nil || req.Query == "" {
 		return nil, ErrMissingQuery
@@ -51,6 +52,7 @@ func (c *Client) Search(ctx context.Context, req *SearchRequest) (*SearchRespons
 	return resp, nil
 }
 
+// SearchUserMemories is a convenience method to search memories for a specific user.
 func (c *Client) SearchUserMemories(ctx context.Context, userID, query string, opts ...SearchOption) (*SearchResponse, error) {
 	req := &SearchRequest{
 		Query:   query,
@@ -90,6 +92,9 @@ func WithFields(fields ...string) SearchOption {
 
 func WithSearchFilters(filters Filters) SearchOption {
 	return func(r *SearchRequest) {
+		if r.Filters == nil {
+			r.Filters = NewFilters()
+		}
 		for k, v := range filters {
 			r.Filters[k] = v
 		}

@@ -106,12 +106,22 @@ func (f Filters) WithCategoryContains(category string) Filters {
 }
 
 func (f Filters) WithCreatedAfter(t time.Time) Filters {
-	f["created_at"] = map[string]any{"gte": t.Format(time.RFC3339)}
+	m, _ := f["created_at"].(map[string]any)
+	if m == nil {
+		m = map[string]any{}
+		f["created_at"] = m
+	}
+	m["gte"] = t.Format(time.RFC3339)
 	return f
 }
 
 func (f Filters) WithCreatedBefore(t time.Time) Filters {
-	f["created_at"] = map[string]any{"lte": t.Format(time.RFC3339)}
+	m, _ := f["created_at"].(map[string]any)
+	if m == nil {
+		m = map[string]any{}
+		f["created_at"] = m
+	}
+	m["lte"] = t.Format(time.RFC3339)
 	return f
 }
 

@@ -17,6 +17,7 @@ const (
 	defaultTimeout   = 30 * time.Second
 )
 
+// Client is the mem0 API client.
 type Client struct {
 	baseURL    string
 	apiKey     string
@@ -26,6 +27,8 @@ type Client struct {
 	projectID  string
 }
 
+// NewClient creates a new mem0 API client with the given API key.
+// Returns ErrMissingAPIKey if the API key is empty.
 func NewClient(apiKey string, opts ...ClientOption) (*Client, error) {
 	if apiKey == "" {
 		return nil, ErrMissingAPIKey

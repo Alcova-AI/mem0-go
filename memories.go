@@ -98,6 +98,10 @@ func WithExpiration(date string) AddMemoryOption {
 	return func(r *AddMemoriesRequest) { r.ExpirationDate = date }
 }
 
+func WithInfer(infer bool) AddMemoryOption {
+	return func(r *AddMemoriesRequest) { r.Infer = &infer }
+}
+
 func (c *Client) GetMemory(ctx context.Context, memoryID string) (*Memory, error) {
 	if memoryID == "" {
 		return nil, ErrMissingID
@@ -158,6 +162,7 @@ type UpdateMemoryRequest struct {
 	Metadata map[string]any `json:"metadata,omitempty"`
 }
 
+// UpdateMemory updates an existing memory's text or metadata.
 func (c *Client) UpdateMemory(ctx context.Context, memoryID string, req *UpdateMemoryRequest) (*Memory, error) {
 	if memoryID == "" {
 		return nil, ErrMissingID
@@ -209,10 +214,7 @@ func (c *Client) DeleteUserMemories(ctx context.Context, userID string) error {
 	})
 }
 
-type MemoryHistoryResponse struct {
-	Results []MemoryHistory `json:"results"`
-}
-
+// GetMemoryHistory retrieves the change history for a memory.
 func (c *Client) GetMemoryHistory(ctx context.Context, memoryID string) ([]MemoryHistory, error) {
 	if memoryID == "" {
 		return nil, ErrMissingID
@@ -265,6 +267,7 @@ type batchDeleteBody struct {
 	Memories []batchDeleteItem `json:"memories"`
 }
 
+// BatchDelete deletes multiple memories in a single request.
 func (c *Client) BatchDelete(ctx context.Context, req *BatchDeleteRequest) error {
 	if req == nil || len(req.MemoryIDs) == 0 {
 		return ErrEmptyRequest
